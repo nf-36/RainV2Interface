@@ -73,7 +73,7 @@ local text = tab:CreateTextField({
 ```lua
 local dropdown = tab:CreateDropdown({
     Name = "Dropdown",
-    Options = { "1", "2", "3", "4" }
+    Options = { "1", "2", "3", "4" },
     Default = { "2" },
     OnChanged = function(option) 
         print(option)
