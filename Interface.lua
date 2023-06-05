@@ -830,7 +830,7 @@ function Interface:BeginMenu(menu_options)
             TabDisplay = nil,
             TabButton = nil
         }
-        
+
         local cuh = Navigation.NavigationOptionsContainer.TabButtonDisplay.TBDContainer
         cuh.CanvasSize = UDim2.new(
             cuh.CanvasSize.X.Scale, cuh.CanvasSize.X.Offset + 25,
@@ -885,12 +885,18 @@ function Interface:BeginMenu(menu_options)
 
         local ElementHandler = {}
 
+        local cuh2 = tabDisplay:WaitForChild("TabElementContainer")
+
+        cuh2.CanvasSize = UDim2.new(0, 0, 1, 0)
+
         function ElementHandler:CreateBoolean(BooleanOptions) 
             local BooleanOptions = BooleanOptions or {
                 Name = BooleanOptions.Name,
                 Enabled = BooleanOptions.Enabled or false,
                 OnChanged = BooleanOptions.OnChanged or function(v) print(v) end
             }
+
+            cuh2.CanvasSize = cuh2.CanvasSize + UDim2.new(0, 0, 0, 50)
 
             local booleanClass = {
                 Update = nil
@@ -985,6 +991,8 @@ function Interface:BeginMenu(menu_options)
                     print(value)
                 end
             }
+
+            cuh2.CanvasSize = cuh2.CanvasSize + UDim2.new(0, 0, 0, 50)
 
             local sliderClass = {
                 Update = nil
@@ -1111,6 +1119,8 @@ function Interface:BeginMenu(menu_options)
                 end
             }
 
+            cuh2.CanvasSize = cuh2.CanvasSize + UDim2.new(0, 0, 0, 50)
+
             local textfieldClass = {
                 Update = nil
             }
@@ -1207,6 +1217,8 @@ function Interface:BeginMenu(menu_options)
                     print(option)
                 end
             }
+
+            cuh2.CanvasSize = cuh2.CanvasSize + UDim2.new(0, 0, 0, 50)
 
             local dropdownClass = {
                 Update = nil
@@ -1386,6 +1398,8 @@ function Interface:BeginMenu(menu_options)
                     print(color.R, color.G, color.B)
                 end
             }
+
+            cuh2.CanvasSize = cuh2.CanvasSize + UDim2.new(0, 0, 0, 50)
 
             local colorpTemplate = nil
 
