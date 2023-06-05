@@ -831,6 +831,12 @@ function Interface:BeginMenu(menu_options)
             TabButton = nil
         }
         
+        local cuh = Navigation.NavigationOptionsContainer.TabButtonDisplay.TBDContainer
+        cuh.CanvasSize = UDim2.new(
+            cuh.CanvasSize.X.Scale, cuh.CanvasSize.X.Offset + 25,
+            0, 0
+        )
+        
         local tabButton = buttonTemplate:Clone()
         tabButton.Parent = Navigation.NavigationOptionsContainer.TabButtonDisplay.TBDContainer
         tabButton.Visible = true
