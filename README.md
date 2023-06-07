@@ -15,6 +15,19 @@ local window = library:BeginMenu({ Title = "Title" }); --> Options[1] = Title (O
 local tab = window:BeginTab("Tab 1")
 ```
 
+## Creating an Action / Button.
+* `Name`      = Name of the element.    `string`
+* `OnClick`   = Callback / Listener of the element. Will be called whenever the element is clicked.    `function`
+
+```lua
+local action = tab:CreateAction({
+    Name = "Action / Button",
+    OnClick = function() 
+        print("Hello, world!")    
+    end
+})
+```
+
 ## Creating a Toggle / Switch.
 * `Name`      = Name of the element.  `string`
 * `Default`   = Default value of the element. `boolean`
