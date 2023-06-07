@@ -1,4 +1,5 @@
 local Interface   = {}
+local Configurations = {}
 
 local UserInputService = game:GetService("UserInputService")
 local TweenService = game:GetService("TweenService")
@@ -40,10 +41,14 @@ end
 local Rain = game:GetObjects("rbxassetid://13580655431")[1]
 Rain.Name = interface_name
 
-function Interface:BeginMenu(menu_options) 
+function Interface:BeginMenu(menu_options)
     if not (Rain.Enabled) then
         Rain.Enabled = true
     end
+
+    local menu_options = menu_options or {
+        Title = menu_options.Title or "Rainhub V2"
+    }
 
     if (gethui) then
         Rain.Parent = gethui()
@@ -77,8 +82,6 @@ function Interface:BeginMenu(menu_options)
     local WindowSHolder = Window:WaitForChild("WindowSHolder")
     local Navigation = Window:WaitForChild("Navigation")
 
-    Navigation.WindowTitle.Text = menu_options.Title
-
     Elements.ClipsDescendants = true
 
     local GreyOut = nil
@@ -86,7 +89,7 @@ function Interface:BeginMenu(menu_options)
     Window.Position = UDim2.new(0.35, 0, 0.15, 0)
 
     if (Navigation:WaitForChild("WindowTitle")) then
-        Navigation.WindowTitle.Text = menu_options.Text or "Rain V2"
+        Navigation.WindowTitle.Text = menu_options.Title
     end
 
     if (Elements:WaitForChild("TabDisplay"):WaitForChild("GreyOut")) then
@@ -98,49 +101,49 @@ function Interface:BeginMenu(menu_options)
         BackgroundTransparency = 1
     }):Play()
 
-    if (Navigation:WaitForChild("NavigationOptions")) then
-        local max_size = 21
-        local sizes = {
-        	19,
-        	15,
-        	11
-        }
+    local max_size = 21
+    local sizes = {
+        19,
+        15,
+        11
+    }
 
-        local hovering = false
+    local hovering = false
 
-        local p = Navigation.NavigationOptions
-        local nol1, nol2, nol3 = p.NOLine1, p.NOLine2, p.NOLine3
+    local p = Navigation.NavigationOptions
+    local nol1, nol2, nol3 = p.NOLine1, p.NOLine2, p.NOLine3
 
-        local function UpdateLines() 
-        	if (hovering and not ContainerOpen) then
-        		TweenService:Create(nol1, info, {
-        			Size = UDim2.new(0, max_size, 0, 4)
-        		}):Play()
-        		TweenService:Create(nol2, info, {
-        			Size = UDim2.new(0, max_size, 0, 4)
-        		}):Play()
-        		TweenService:Create(nol3, info, {
-        			Size = UDim2.new(0, max_size, 0, 4)
-        		}):Play()
-        		TweenService:Create(p.NOStroke, info, {
-        			Transparency = 0
-        		}):Play()
-        	elseif not (ContainerOpen) and not hovering then
-        		TweenService:Create(nol1, info, {
-        			Size = UDim2.new(0, sizes[1], 0, 4)
-        		}):Play()
-        		TweenService:Create(nol2, info, {
-        			Size = UDim2.new(0, sizes[2], 0, 4)
-        		}):Play()
-        		TweenService:Create(nol3, info, {
-        			Size = UDim2.new(0, sizes[3], 0, 4)
-        		}):Play()
-        		TweenService:Create(p.NOStroke, info, {
-        			Transparency = 1
-        		}):Play()
-        	end
+    local function UpdateLines() 
+        if (hovering and not ContainerOpen) then
+            TweenService:Create(nol1, info, {
+                Size = UDim2.new(0, max_size, 0, 4)
+            }):Play()
+            TweenService:Create(nol2, info, {
+                Size = UDim2.new(0, max_size, 0, 4)
+            }):Play()
+            TweenService:Create(nol3, info, {
+                Size = UDim2.new(0, max_size, 0, 4)
+            }):Play()
+            TweenService:Create(p.NOStroke, info, {
+                Transparency = 0
+            }):Play()
+        elseif not (ContainerOpen) and not hovering then
+            TweenService:Create(nol1, info, {
+                Size = UDim2.new(0, sizes[1], 0, 4)
+            }):Play()
+            TweenService:Create(nol2, info, {
+                Size = UDim2.new(0, sizes[2], 0, 4)
+            }):Play()
+            TweenService:Create(nol3, info, {
+                Size = UDim2.new(0, sizes[3], 0, 4)
+            }):Play()
+            TweenService:Create(p.NOStroke, info, {
+                Transparency = 1
+            }):Play()
         end
+    end
 
+    if (Navigation:WaitForChild("NavigationOptions")) then
         p.MouseEnter:Connect(function() 
             if (WindowMinimised) then
                 return
@@ -823,6 +826,18 @@ function Interface:BeginMenu(menu_options)
     local TabHandler = {}
     local Tabs = {}
 
+    local templates = Instance.new("Folder", Elements.TabDisplay)
+    templates.Name = "Templates"
+
+    if (Elements.TabDisplay.Tab1:WaitForChild("TabElementContainer")) then
+        for i, v in pairs(Elements.TabDisplay.Tab1.TabElementContainer:GetChildren()) do 
+            if (v:IsA("Frame")) then
+                v.Visible = false
+                v.Parent = templates
+            end
+        end
+    end
+
     function TabHandler:BeginTab(TabName) 
         local tabClass = {
             Name = TabName,
@@ -849,19 +864,6 @@ function Interface:BeginMenu(menu_options)
         tabDisplay.Parent = Elements.TabDisplay
         tabDisplay.Name = TabName
         tabDisplay.Visible = false
-
-        local templates = Instance.new("Folder", tabPageTemplate)
-        templates.Name = "Templates"
-
-        if (tabDisplay:WaitForChild("TabElementContainer")) then
-            for i, v in pairs(tabDisplay:WaitForChild("TabElementContainer"):GetChildren()) do 
-                if (v:IsA("Frame")) then
-                    v.Visible = false
-
-                    v.Parent = templates
-                end
-            end
-        end
 
         if (#Tabs == 0) then
             tabClass.Showing = true
@@ -892,13 +894,16 @@ function Interface:BeginMenu(menu_options)
         function ElementHandler:CreateBoolean(BooleanOptions) 
             local BooleanOptions = BooleanOptions or {
                 Name = BooleanOptions.Name,
-                Enabled = BooleanOptions.Enabled or false,
+                Default = BooleanOptions.Default or false,
                 OnChanged = BooleanOptions.OnChanged or function(v) print(v) end
             }
 
             cuh2.CanvasSize = cuh2.CanvasSize + UDim2.new(0, 0, 0, 50)
 
             local booleanClass = {
+                Name = BooleanOptions.Name,
+                Value = BooleanOptions.Enabled,
+                UpdateState = BooleanOptions.UpdateState,
                 Update = nil
             }
 
@@ -979,6 +984,16 @@ function Interface:BeginMenu(menu_options)
                 end
             end
 
+            booleanClass.UpdateState = function(new) 
+                Enabled = new
+                local suc, req = pcall(BooleanOptions.OnChanged, Enabled)
+                if not (suc) then
+                    error(req)
+                end
+
+                UpdateBooleanDisplay()
+            end
+
             table.insert(ElementClasses, booleanClass)
         end
 
@@ -995,6 +1010,9 @@ function Interface:BeginMenu(menu_options)
             cuh2.CanvasSize = cuh2.CanvasSize + UDim2.new(0, 0, 0, 50)
 
             local sliderClass = {
+                Name = SliderOptions.Name,
+                Value = SliderOptions.Default,
+                UpdateState = nil,
                 Update = nil
             }
 
@@ -1103,6 +1121,10 @@ function Interface:BeginMenu(menu_options)
                     sliderFill.BackgroundColor3 = AccentColor
                     sliderValue.TextColor3 = AccentColor
                 end
+            end
+
+            sliderClass.UpdateState = function(new_value) 
+                pcall(SetValue, new_value)
             end
 
             pcall(SetValue, newValue)
@@ -1464,6 +1486,62 @@ function Interface:BeginMenu(menu_options)
             end)
         end
 
+        function ElementHandler:CreateAction(ActionOptions) 
+            local ActionOptions = ActionOptions or {
+                Name = ActionOptions.Name or "Action Name",
+                OnClick = ActionOptions.OnClick or function() 
+                    print("Hello, world!")
+                end
+            }
+
+            cuh2.CanvasSize = cuh2.CanvasSize + UDim2.new(0, 0, 0, 50)
+
+            local actionTemplate = nil
+
+            if (templates:WaitForChild("ActionElement")) then
+                actionTemplate = templates.ActionElement
+                actionTemplate.Visible = false
+            end
+
+            local actionElement = actionTemplate:Clone()
+            actionElement.Parent = tabDisplay.TabElementContainer
+            actionElement.Visible = true
+
+            local actionContainer = actionElement:FindFirstChild("AEContainer")
+            local actionActivator = actionContainer:FindFirstChild("AECActivator")
+
+            actionActivator.Text = ActionOptions.Name
+
+            Connections["ActionMouseEnter"] = actionContainer.MouseEnter:Connect(function()
+                if not (ElementsEnabled) then
+                    return
+                end
+
+                TweenService:Create(actionContainer, info, {
+                    BackgroundColor3 = Color3.fromRGB(21, 21, 21)
+                }):Play()
+            end)
+
+            Connections["ActionMouseLeave"] = actionContainer.MouseLeave:Connect(function()
+                if not (ElementsEnabled) then
+                    return
+                end
+
+                TweenService:Create(actionContainer, info, {
+                    BackgroundColor3 = Color3.fromRGB(16, 16, 16)
+                }):Play()
+            end)
+
+            Connections["ActionMouseClick"] = actionActivator.MouseButton1Click:Connect(function()
+                if not ElementsEnabled then
+                    return
+                end
+            
+                local success, request = pcall(ActionOptions.OnClick)
+                assert(success, request)
+            end)            
+        end
+
         tabButton.MouseEnter:Connect(function()
             if (tabButton:WaitForChild("TabButtonTitle")) and not tabClass.Showing and ContainerOpen then
                 local Text = tabButton:WaitForChild("TabButtonTitle")
@@ -1546,8 +1624,6 @@ function Interface:BeginMenu(menu_options)
     end)()
 
     task.defer(function()
-        
-
         local RainbowAccent = false
         local Settings = TabHandler:BeginTab("Settings")
 
@@ -1610,6 +1686,8 @@ function Interface:BeginMenu(menu_options)
 
                             local rainbowColor = Color3.fromRGB(hslToRgb(hue, saturation, lightness))
 
+                            TextHoverColor = rainbowColor
+
                             for _, k in ipairs(ElementClasses) do
                                 k.Update("Accent", rainbowColor)
                             end
@@ -1641,6 +1719,10 @@ function Interface:BeginMenu(menu_options)
                 TextHoverColor = color
             end
         end })
+
+        Settings:CreateTextField({ Name = "Load Configuration", Default = "", Ends="Clips", OnChanged = function(file_name) 
+            Configurations:ParseConfiguration(file_name)
+        end  })
     end)
 
     return TabHandler
