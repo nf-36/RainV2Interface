@@ -1719,10 +1719,6 @@ function Interface:BeginMenu(menu_options)
                 TextHoverColor = color
             end
         end })
-
-        Settings:CreateTextField({ Name = "Load Configuration", Default = "", Ends="Clips", OnChanged = function(file_name) 
-            Configurations:ParseConfiguration(file_name)
-        end  })
     end)
 
     return TabHandler
