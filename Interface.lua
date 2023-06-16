@@ -1037,77 +1037,78 @@ function Interface:BeginMenu(menu_options)
 
             local min, max, default = SliderOptions.Range[1], SliderOptions.Range[2], (SliderOptions.Default[1] or SliderOptions.Default)
             local dragging, value = false, default
-
+            
             local AccentColor = ElementProperties.Accent
-
-            sliderValue.Text = string.format("%.f", tostring(default))
+            
+            sliderValue.Text = string.format("%.2f", default) -- Adjust the decimal format as needed
             sliderValue.TextColor3 = AccentColor
-
+            
             sliderFill.BackgroundColor3 = AccentColor
-
-            default = math.clamp(default, min, max)
-
-            local function UpdateFill() 
+            
+            default = default
+            
+            local function UpdateFill()
                 local fillPercent = (value - min) / (max - min)
-                sliderValue.Text = string.format("%.f", tostring(value))
+                sliderValue.Text = string.format("%.2f", value) -- Adjust the decimal format as needed
                 TweenService:Create(sliderFill, TweenInfo.new(.1, Enum.EasingStyle.Quart), {
                     Size = UDim2.new(fillPercent, 0, 1, 0)
                 }):Play()
             end
-
-            local function SetValue(newValue) 
-                value = math.floor(math.clamp(newValue, min, max))
+            
+            local function SetValue(newValue)
+                value = math.clamp(newValue, min, max)
                 pcall(UpdateFill)
                 local suc, req = pcall(SliderOptions.OnChanged, value)
-                if not (suc) then
+                if not suc then
                     error(req)
                 end
             end
-
+            
             Connections["sliderbegin_c"] = sliderActivator.MouseButton1Down:Connect(function()
-                if not (ElementsEnabled) then
+                if not ElementsEnabled then
                     return
                 end
-                
+            
                 dragging = true
                 local pos = UserInputService:GetMouseLocation()
-                if (dragging) then
+                if dragging then
                     local percent = (pos.X - sliderFillFrame.AbsolutePosition.X) / sliderFillFrame.AbsoluteSize.X
                     local newValue = min + (max - min) * percent
                     pcall(SetValue, newValue)
                 end
             end)
-
+            
             Connections["sliderend_c"] = sliderActivator.MouseButton1Up:Connect(function()
-                if not (ElementsEnabled) then
+                if not ElementsEnabled then
                     return
                 end
-                
+            
                 dragging = false
             end)
-
+            
             Connections["sliderenc_c2"] = UserInputService.InputEnded:Connect(function(input, gameProcessedEvent)
-                if (input.UserInputType.Name == "MouseButton1") then
-                    if (dragging) then
+                if input.UserInputType.Name == "MouseButton1" then
+                    if dragging then
                         dragging = false
                     end
                 end
             end)
-
+            
             Connections["slidermove_c"] = UserInputService.InputChanged:Connect(function(input, gameProcessedEvent)
-                if not (ElementsEnabled) then
+                if not ElementsEnabled then
                     return
                 end
-
-                if (input.UserInputType == Enum.UserInputType.MouseMovement) then
+            
+                if input.UserInputType == Enum.UserInputType.MouseMovement then
                     local pos = UserInputService:GetMouseLocation()
-                    if (dragging) then
+                    if dragging then
                         local percent = (pos.X - sliderFillFrame.AbsolutePosition.X) / sliderFillFrame.AbsoluteSize.X
                         local newValue = min + (max - min) * percent
                         pcall(SetValue, newValue)
                     end
                 end
             end)
+
 
             sliderClass.Type = "slider"
             sliderClass.Update = function(Type, NewValue) 
