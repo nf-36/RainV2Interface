@@ -2,7 +2,7 @@
 
 ## Initiating the interface / library.
 ```lua
-local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/Iujan/RainV2Interface/main/Interface.lua", true))()
+local library = loadstring(game:HttpGetAsync "https://raw.githubusercontent.com/cabingory/RainV2Interface/main/Interface.lua" )()
 ```
 
 ## Initiating the Window.
