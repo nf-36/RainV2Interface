@@ -22,7 +22,9 @@ local ElementProperties = {
     Accent = Color3.fromRGB(0, 110, 255) 
 }
 
-local interface_name = crypt.base64.encode(tostring(Players.LocalPlayer.UserId))
+local encode = (syn and syn.crypt.base64.encode) or crypt.base64encode or crypt.base64_encode or base64.encode
+
+local interface_name = encode(tostring(Players.LocalPlayer.UserId))
 
 if (gethui) then
     for i, gui in pairs(gethui():GetChildren()) do 
