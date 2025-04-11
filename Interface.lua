@@ -850,7 +850,7 @@ function Interface:BeginMenu(menu_options)
 
         local cuh = Navigation.NavigationOptionsContainer.TabButtonDisplay.TBDContainer
         cuh.CanvasSize = UDim2.new(
-            cuh.CanvasSize.X.Scale, cuh.CanvasSize.X.Offset + 25,
+            cuh.CanvasSize.X.Scale, cuh.CanvasSize.X.Offset + 75,
             0, 0
         )
         
